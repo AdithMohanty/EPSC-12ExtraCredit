@@ -63,11 +63,10 @@ def index():
     date_time = datetime.now(timezone.utc)
     
     # Plotting the sky in a separate thread
-    Thread(target=plot_sky, args=(latitude, longitude, date_time)).start()
+    Thread(target=plot_sky, args=(float(latitude), float(longitude), date_time)).start()
     
     return render_template('index.html', latitude=latitude, longitude=longitude, date_time=date_time)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-    
