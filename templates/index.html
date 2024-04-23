@@ -4,10 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sky Visualization</title>
+    <style>
+        #plot {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1>Sky Visualization</h1>
-    <h2>Sky visualization for Latitude: {{ latitude }}, Longitude: {{ longitude }}, Date and Time: {{ date_time }}</h2>
-    <img src="{{ url_for('static', filename='sky_plot.png') }}" alt="Sky Visualization">
+    <div>
+        <label for="latitude">Latitude:</label>
+        <input type="text" id="latitude" name="latitude" placeholder="Latitude" required>
+    </div>
+    <div>
+        <label for="longitude">Longitude:</label>
+        <input type="text" id="longitude" name="longitude" placeholder="Longitude" required>
+    </div>
+    <div>
+        <label for="date_time">Date and Time:</label>
+        <input type="datetime-local" id="date_time" name="date_time" required>
+    </div>
+    <button onclick="plotSky()">Visualize</button>
+    <div id="plot">
+        <h2>Sky visualization</h2>
+        <img id="sky_plot" src="{{ url_for('static', filename='sky_plot.png') }}" alt="Sky Visualization">
+    </div>
+    <script>
+        function plotSky() {
+            const latitude = document.getElementById("latitude").value;
+            const longitude = document.getElementById("longitude").value;
+            const date_time = document.getElementById("date_time").value;
+
+            fetch('/get_sky_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'date_time': date_time
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("sky_plot").src = "{{ url_for('static', filename='sky_plot.png') }}?" + new Date().getTime();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
 </body>
 </html>
