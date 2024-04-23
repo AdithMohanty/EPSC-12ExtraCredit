@@ -6,7 +6,6 @@ import os
 from datetime import datetime, timezone
 from threading import Thread
 from geopy.geocoders import Nominatim
-from geopy.point import Point
 
 app = Flask(__name__)
 
@@ -51,16 +50,15 @@ def plot_sky(latitude, longitude, date_time):
     plt.savefig(plot_file)
     plt.close()
 
-def get_location():
+def get_location(ip):
     geolocator = Nominatim(user_agent="geoapiExercises")
-    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
     location = geolocator.reverse(ip)
     return location.latitude, location.longitude
 
 @app.route('/')
 def index():
     # Latitude and Longitude of user's current location
-    latitude, longitude = get_location()
+    latitude, longitude = get_location(request.headers.get('X-Forwarded-For', request.remote_addr))
     date_time = datetime.now(timezone.utc)
     
     # Plotting the sky in a separate thread
