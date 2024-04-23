@@ -5,55 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sky Visualization</title>
     <style>
-        #plot {
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        #sky-plot {
+            width: 60%;
+            height: auto;
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Sky Visualization</h1>
-    <div>
-        <label for="latitude">Latitude:</label>
-        <input type="text" id="latitude" name="latitude" placeholder="Latitude" required>
+    <div class="container">
+        <h1>Sky Visualization</h1>
+        <h2 id="location-info">Loading...</h2>
+        <img id="sky-plot" src="{{ url_for('static', filename='sky_plot.png') }}" alt="Sky Visualization">
     </div>
-    <div>
-        <label for="longitude">Longitude:</label>
-        <input type="text" id="longitude" name="longitude" placeholder="Longitude" required>
-    </div>
-    <div>
-        <label for="date_time">Date and Time:</label>
-        <input type="datetime-local" id="date_time" name="date_time" required>
-    </div>
-    <button onclick="plotSky()">Visualize</button>
-    <div id="plot">
-        <h2>Sky visualization</h2>
-        <img id="sky_plot" src="{{ url_for('static', filename='sky_plot.png') }}" alt="Sky Visualization">
-    </div>
-    <script>
-        function plotSky() {
-            const latitude = document.getElementById("latitude").value;
-            const longitude = document.getElementById("longitude").value;
-            const date_time = document.getElementById("date_time").value;
 
-            fetch('/get_sky_data', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    'latitude': latitude,
-                    'longitude': longitude,
-                    'date_time': date_time
-                })
-            })
+    <script>
+        // Function to get the user's current location
+        function getLocation() {
+            fetch('https://ipapi.co/json/')
             .then(response => response.json())
             .then(data => {
-                document.getElementById("sky_plot").src = "{{ url_for('static', filename='sky_plot.png') }}?" + new Date().getTime();
+                const { latitude, longitude } = data;
+                const dateTime = new Date().toISOString();
+                displaySky(latitude, longitude, dateTime);
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error('Error:', error);
             });
         }
+
+        // Function to display the sky plot
+        function displaySky(latitude, longitude, dateTime) {
+            const skyPlot = document.getElementById('sky-plot');
+            skyPlot.src = `https://api.sunearthtools.com/sky/sky.php?&lat=${latitude}&lng=${longitude}&date=${dateTime}&alt=0&tz=0`;
+            skyPlot.onload = () => {
+                const locationInfo = document.getElementById('location-info');
+                locationInfo.textContent = `Sky visualization for Latitude: ${latitude}, Longitude: ${longitude}, Date and Time: ${dateTime}`;
+            }
+        }
+
+        // Load the sky plot when the page is loaded
+        window.onload = getLocation;
     </script>
 </body>
 </html>

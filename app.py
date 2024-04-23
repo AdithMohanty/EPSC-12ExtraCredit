@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 import numpy as np
 import matplotlib.pyplot as plt
 import ephem
@@ -52,7 +52,8 @@ def plot_sky(latitude, longitude, date_time):
 
 def get_location():
     geolocator = Nominatim(user_agent="geoapiExercises")
-    location = geolocator.reverse(request.remote_addr)
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    location = geolocator.reverse(ip)
     return location.latitude, location.longitude
 
 @app.route('/')
@@ -64,15 +65,7 @@ def index():
     # Plotting the sky in a separate thread
     Thread(target=plot_sky, args=(latitude, longitude, date_time)).start()
     
-    return render_template('index.html')
-
-@app.route('/get_sky_data', methods=['POST'])
-def get_sky_data():
-    latitude = float(request.form['latitude'])
-    longitude = float(request.form['longitude'])
-    date_time = datetime.strptime(request.form['date_time'], "%Y-%m-%dT%H:%M")
-    plot_sky(latitude, longitude, date_time)
-    return jsonify({'success': True})
+    return render_template('index.html', latitude=latitude, longitude=longitude, date_time=date_time)
 
 if __name__ == '__main__':
     app.run(debug=False, port=int(os.environ.get('PORT', 5000)))
