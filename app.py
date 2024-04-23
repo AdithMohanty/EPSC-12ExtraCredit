@@ -52,13 +52,25 @@ def plot_sky(latitude, longitude, date_time):
 
 def get_location(ip):
     geolocator = Nominatim(user_agent="geoapiExercises")
-    location = geolocator.reverse(ip)
-    return location.latitude, location.longitude
+    ip_address = ip.split(',')[0]  # Get the first IP address
+    location = geolocator.reverse(ip_address)
+    return location.latitude, location.longitude, type(location)
 
 @app.route('/')
 def index():
-    # Latitude and Longitude of user's current location
-    latitude, longitude = get_location(request.headers.get('X-Forwarded-For', request.remote_addr))
+    # Get IP address
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    
+    # Convert IP address to latitude and longitude
+    geolocator = Nominatim(user_agent="geoapiExercises")
+    ip_address = ip.split(',')[0]  # Get the first IP address
+    location = geolocator.geocode(ip_address)
+    if location:
+        latitude, longitude = location.latitude, location.longitude
+    else:
+        # Default location if geolocation fails
+        latitude, longitude = 0.0, 0.0
+    
     date_time = datetime.now(timezone.utc)
     
     # Plotting the sky in a separate thread
