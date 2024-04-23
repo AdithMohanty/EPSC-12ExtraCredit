@@ -76,7 +76,7 @@ def index():
     # Plotting the sky in a separate thread
     Thread(target=plot_sky, args=(float(latitude), float(longitude), date_time)).start()
     
-    return render_template('index.html', latitude=latitude, longitude=longitude, date_time=date_time)
+    return f'Latitude: {latitude}, Longitude: {longitude}, Time: {date_time}'
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
