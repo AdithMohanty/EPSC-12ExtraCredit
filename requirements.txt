@@ -1,5 +1,5 @@
-Flask==2.0.2
-numpy==1.22.3
-geopy==2.2.0
-matplotlib==3.5.1
-ephem==4.0.0
+Flask
+numpy
+geopy
+matplotlib
+ephem
