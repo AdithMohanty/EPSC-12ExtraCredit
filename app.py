@@ -6,6 +6,7 @@ import os
 from datetime import datetime, timezone
 from threading import Thread
 from geopy.geocoders import Nominatim
+from geopy.point import Point
 
 app = Flask(__name__)
 
@@ -53,7 +54,9 @@ def plot_sky(latitude, longitude, date_time):
 def get_location():
     geolocator = Nominatim(user_agent="geoapiExercises")
     ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    print(ip)
     location = geolocator.reverse(ip)
+    # location = geolocator.reverse(Point(lat, lang))
     return location.latitude, location.longitude
 
 @app.route('/')
