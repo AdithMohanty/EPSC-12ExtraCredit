@@ -64,7 +64,7 @@ def index():
     # Convert IP address to latitude and longitude
     geolocator = Nominatim(user_agent="geoapiExercises")
     ip_address = ip.split(',')[0]  # Get the first IP address
-    location = geolocator.geocode(ip_address)
+    location = geolocator.geocode(ip_address, headers={'User-Agent': 'Mozilla/5.0'})
     if location:
         latitude, longitude = location.latitude, location.longitude
     else:
