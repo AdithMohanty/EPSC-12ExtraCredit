@@ -55,10 +55,9 @@ def plot_sky(latitude, longitude, date_time):
 
     # Rectangular plot
     plt.subplot(122)
-    plt.plot(sun_azimuth, sun_altitude, 'o', color='yellow', label='Sun')
+    plt.plot(sun_azimuth, sun_altitude, 'o', color='orange', label='Sun')
     plt.plot(moon_azimuth, moon_altitude, 'o', color='gray', label='Moon')
-    for i in range(1, 360, 30):  # 12 constellations
-        plt.text(np.random.uniform(0, 360), np.random.uniform(0, 90), "*", fontsize=8)
+
     plt.title('Rectangular Plot')
     plt.xlabel('Azimuth (degrees)')
     plt.ylabel('Altitude (degrees)')
