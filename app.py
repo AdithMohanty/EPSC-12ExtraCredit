@@ -4,6 +4,17 @@ import ephem
 from datetime import datetime, timezone
 
 def plot_sky(latitude, longitude, date_time):
+    """
+    Plots the position of the Sun and the Moon in the sky.
+
+    Parameters:
+        latitude (float): Latitude of the observer (in degrees).
+        longitude (float): Longitude of the observer (in degrees).
+        date_time (datetime): Date and time of observation (timezone aware).
+
+    Returns:
+        None
+    """
     # Observer's location
     observer = ephem.Observer()
     observer.lat = np.deg2rad(latitude)
@@ -22,9 +33,14 @@ def plot_sky(latitude, longitude, date_time):
     sun_azimuth = np.rad2deg(sun.az)
     sun_altitude = 90 - np.rad2deg(sun.alt)
 
+    # Plotting the Moon
+    moon_azimuth = np.rad2deg(moon.az)
+    moon_altitude = 90 - np.rad2deg(moon.alt)
+
     # Polar plot
     plt.subplot(121, projection='polar')
     plt.plot(np.deg2rad(sun_azimuth), sun_altitude, 'o', color='yellow', label='Sun')
+    plt.plot(np.deg2rad(moon_azimuth), moon_altitude, 'o', color='gray', label='Moon')
     plt.title('Polar Plot')
     plt.gca().set_theta_zero_location('N')
     plt.gca().set_theta_direction(-1)
@@ -40,7 +56,9 @@ def plot_sky(latitude, longitude, date_time):
     # Rectangular plot
     plt.subplot(122)
     plt.plot(sun_azimuth, sun_altitude, 'o', color='yellow', label='Sun')
-
+    plt.plot(moon_azimuth, moon_altitude, 'o', color='gray', label='Moon')
+    for i in range(1, 360, 30):  # 12 constellations
+        plt.text(np.random.uniform(0, 360), np.random.uniform(0, 90), "*", fontsize=8)
     plt.title('Rectangular Plot')
     plt.xlabel('Azimuth (degrees)')
     plt.ylabel('Altitude (degrees)')
@@ -54,8 +72,10 @@ def plot_sky(latitude, longitude, date_time):
     plt.tight_layout()
     plt.show()
 
-latitude = 37.7749
-longitude = -122.4194
+
+# Location of Campinile
+latitude = 37.871873
+longitude = -122.258347
 date_time = datetime.now(timezone.utc)
 
-plot_sky(latitude, longitude, date_time)
+plot_sky(latitude, longitude, datetime.now(timezone.utc))
