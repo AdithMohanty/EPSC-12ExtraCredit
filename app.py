@@ -97,7 +97,7 @@ def get_altandaz_camp(latitude, longitude, date_time):
 
     return {'Moon': [moon_azimuth, moon_altitude], 'Sun': [sun_azimuth, sun_altitude]}
 
-def plot_object_over_x_days(object, start_date, entries, period=5):
+def plot_object_over_x_days_n_times(object, start_date, entries, period=5):
     """
     takes in four parameters
     - object: Which object to track (Sun/ Moon)
