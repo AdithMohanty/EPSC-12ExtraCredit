@@ -218,6 +218,8 @@ print(start_date)
 plot_object_over_30_days('Sun', start_date, 10, 7)
 Make 10 observations of the sun from start_date time every 7 days
 """
+# uncomment and change values to use
 
-# plot_object_over_x_days('Sun', start_date, 9, 10)
-object_over_a_day(2024, 4, 18, 'Moon')
+# plot_sky(longitude, latitude, datetime.now(tz))
+# plot_object_over_x_days_n_times('Sun', start_date, 8, 7)
+# object_over_a_day(2024, 4, 18, 'Moon')
