@@ -155,6 +155,57 @@ def plot_object_over_x_days(object, start_date, entries, period=5):
     plt.tight_layout()
     plt.show()
 
+def object_over_a_day(year, month, day, object):
+    start_date = datetime.now(tz).replace(year=year, month=month, day=day, hour=0, minute=0, second=0)
+    plt.figure(figsize=(12, 6))
+
+    # Polar
+    plt.subplot(121, projection='polar')
+    plt.title(f'{object} - Polar Plot')
+    plt.gca().set_theta_zero_location('N')
+    plt.gca().set_theta_direction(-1)
+    plt.grid(True)
+
+    # Compass
+    r = np.arange(0, 90, 0.01)
+    directions = {'N': 0, 'NE': 45, 'E': 90, 'SE': 135, 'S': 180, 'SW': 225, 'W': 270, 'NW': 315}
+    for direction, angle in directions.items():
+        plt.text(np.deg2rad(angle), 110, direction, horizontalalignment='center', fontsize=8)
+        plt.plot([np.deg2rad(angle)] * len(r), r, color='black', alpha=0.3)
+    plt.ylim(0, 90)  # Set the maximum value on the radial axis
+    plt.plot([np.deg2rad(244), np.deg2rad(244)], [0, 90], color='red', linestyle='--', alpha=0.5) # my line of view
+
+
+    # Cartiesian
+    plt.subplot(122)
+    plt.title(f'{object} - Rectangular Plot')
+    plt.xlabel('Azimuth (degrees)')
+    plt.ylabel('Altitude (degrees)')
+    plt.xlim(0, 360)
+    plt.ylim(0, 90)
+    plt.gca().invert_yaxis()
+    plt.legend(loc='upper left')
+    plt.plot([244, 244], [0, 90], color='red', linestyle='--', alpha=0.5) # my line of view
+    plt.grid(True)
+
+    for i in range(24):
+        date_time = start_date + timedelta(hours=i)
+        altandaz = get_altandaz_camp(latitude, longitude, date_time)
+
+        # plotting point in polar
+        plt.subplot(121, projection='polar')
+        plt.plot(np.deg2rad(altandaz[object][0]), altandaz[object][1], 'o', label=f'{object} - {date_time.strftime("%Y-%m-%d")}')
+
+        # plotting point in cartiesian
+        plt.subplot(122)
+        plt.plot(altandaz[object][0], altandaz[object][1], 'o', label=f'{object} - {date_time.strftime("%Y-%m-%d")}')
+
+    plt.tight_layout()
+    plt.show()
+
+
+
+
 # Adjust Start Date And Time
 """
 start_date.replace(year=2024, month=2, day=1,hour=17, minute=30, second=0)
@@ -168,4 +219,5 @@ plot_object_over_30_days('Sun', start_date, 10, 7)
 Make 10 observations of the sun from start_date time every 7 days
 """
 
-plot_object_over_x_days('Sun', start_date, 9, 10)
+# plot_object_over_x_days('Sun', start_date, 9, 10)
+object_over_a_day(2024, 4, 18, 'Moon')
